@@ -1,17 +1,22 @@
-external_d_C_prim_showTerm :: Show a => a -> Cover -> ConstStore -> Curry_Prelude.C_String 
+-- We define this typealias here since it's no longer generated
+-- as part of the Prelude (and its exports).
+
+type C_String = Curry_Prelude.OP_List Curry_Prelude.C_Char
+
+external_d_C_prim_showTerm :: Show a => a -> Cover -> ConstStore -> C_String 
 external_d_C_prim_showTerm t _ _ = toCurry (show t) 
  
-external_d_C_prim_showQTerm :: Show a => a -> Cover -> ConstStore -> Curry_Prelude.C_String 
+external_d_C_prim_showQTerm :: Show a => a -> Cover -> ConstStore -> C_String 
 external_d_C_prim_showQTerm t _ _ = toCurry (show t) 
  
 external_d_C_prim_readsUnqualifiedTerm :: 
-  Read a => Curry_Prelude.OP_List Curry_Prelude.C_String -> Curry_Prelude.C_String -> 
-          Cover -> ConstStore -> Curry_Prelude.OP_List (Curry_Prelude.OP_Tuple2 a Curry_Prelude.C_String) 
+  Read a => Curry_Prelude.OP_List C_String -> C_String -> 
+          Cover -> ConstStore -> Curry_Prelude.OP_List (Curry_Prelude.OP_Tuple2 a C_String) 
 external_d_C_prim_readsUnqualifiedTerm _ = external_d_C_prim_readsQTerm 
  
 external_d_C_prim_readsQTerm 
-  :: Read a => Curry_Prelude.C_String -> Cover -> ConstStore 
-  -> Curry_Prelude.OP_List (Curry_Prelude.OP_Tuple2 a Curry_Prelude.C_String) 
+  :: Read a => C_String -> Cover -> ConstStore 
+  -> Curry_Prelude.OP_List (Curry_Prelude.OP_Tuple2 a C_String) 
 external_d_C_prim_readsQTerm s _ _ = toCurryPairs (reads (fromCurry s)) 
   where 
    toCurryPairs [] = Curry_Prelude.OP_List 
