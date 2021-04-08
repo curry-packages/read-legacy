@@ -2,7 +2,7 @@
 --- Library for converting ground terms to strings and vice versa. 
 --- 
 --- @author Michael Hanus 
---- @version March 2021
+--- @version April 2021
 ------------------------------------------------------------------------------ 
 {-# LANGUAGE CPP #-}
 
@@ -11,17 +11,17 @@ module ReadShowTerm ( showTerm, readsUnqualifiedTerm, readUnqualifiedTerm )
 
 import Data.Char ( isSpace )
 
---- Transforms a ground(!) term into a string representation 
+--- Transforms a ground(!) data term into a string representation
 --- in standard prefix notation. 
---- Thus, showTerm suspends until its argument is ground. 
---- This function is similar to the prelude function `show` 
---- but can read the string back with `readUnqualifiedTerm` 
---- (provided that the constructor names are unique without the module 
---- qualifier). 
+--- Thus, `showTerm` suspends until its argument is ground.
+--- This function is similar to the prelude function `show`
+--- but can read the string back with `readUnqualifiedTerm`
+--- (provided that the constructor names are unique without the module
+--- qualifier).
 #ifdef __CURRY2GO__
 showTerm :: Show a => a -> String
 #else
-showTerm :: _ -> String 
+showTerm :: Data a => a -> String 
 #endif
 showTerm x = prim_showTerm $## x 
  
@@ -34,7 +34,7 @@ prim_showTerm external
 #endif
 
  
---- Transform a string containing a term in standard prefix notation 
+--- Transform a string containing a data term in standard prefix notation 
 --- without module qualifiers into the corresponding data term. 
 --- The first argument is a non-empty list of module qualifiers
 --- that are tried to prefix the constructor in the string
@@ -46,7 +46,7 @@ prim_showTerm external
 #ifdef __CURRY2GO__
 readsUnqualifiedTerm :: Read a => [String] -> String -> [(a,String)]
 #else
-readsUnqualifiedTerm :: [String] -> String -> [(_,String)]
+readsUnqualifiedTerm :: Data a => [String] -> String -> [(a,String)]
 #endif
 readsUnqualifiedTerm [] _ =
   error "ReadShowTerm.readsUnqualifiedTerm: list of module prefixes is empty"
@@ -56,7 +56,7 @@ readsUnqualifiedTerm (prefix:prefixes) s =
 #ifdef __CURRY2GO__
 readsUnqualifiedTermWithPrefixes :: Read a => [String] -> String -> [(a,String)]
 #else
-readsUnqualifiedTermWithPrefixes :: [String] -> String -> [(_,String)]
+readsUnqualifiedTermWithPrefixes :: Data a => [String] -> String -> [(a,String)]
 #endif
 readsUnqualifiedTermWithPrefixes prefixes s =
   (prim_readsUnqualifiedTerm $## prefixes) $## s 
@@ -69,7 +69,7 @@ prim_readsUnqualifiedTerm :: [String] -> String -> [(_,String)]
 prim_readsUnqualifiedTerm external
 #endif
 
---- Transforms a string containing a term in standard prefix notation 
+--- Transforms a string containing a data term in standard prefix notation 
 --- without module qualifiers into the corresponding data term. 
 --- The first argument is a non-empty list of module qualifiers
 --- that are tried to prefix the constructor in the string
@@ -81,7 +81,7 @@ prim_readsUnqualifiedTerm external
 #ifdef __CURRY2GO__
 readUnqualifiedTerm :: Read a => [String] -> String -> a
 #else
-readUnqualifiedTerm :: [String] -> String -> _
+readUnqualifiedTerm :: Data a => [String] -> String -> a
 #endif
 readUnqualifiedTerm prefixes s = case result of
   [(term,tail)] 
