@@ -6,7 +6,7 @@
 --- `aValue`) but it is not used in the implementation.
 ---
 --- @author Michael Hanus
---- @version October 2024
+--- @version April 2025
 ------------------------------------------------------------------------------
 {-# LANGUAGE CPP #-}
 
